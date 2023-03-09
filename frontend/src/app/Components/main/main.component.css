@@ -1,0 +1,60 @@
+.home-container {
+    background: url('../../../assets/img/undraw_Projections_re_ulc6.png'),rgba(0, 0,0, 0.4) no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-attachment: fixed;
+    background-blend-mode:color ;
+}
+
+.home-container .home {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+.description {
+    margin-top: 15rem;
+    color: var(--white);
+}
+
+.description h2 {
+    font-size: 3.3rem;
+    text-transform: uppercase;
+}
+.description .marque {
+    color: var(--red);
+    font-weight: bold;
+}
+.description p {
+    margin-top: 3rem;
+    font-size: 1.5rem;
+    width: 500px;
+}
+.btns {
+    margin-top: 5rem;
+}
+.btns a{
+    margin: 1rem;
+}
+.btns .btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 1rem 3rem;
+    cursor: pointer;
+    font-size: 1.7rem;
+    color: var(--white);
+    border: 2px solid var(--main-color);
+    /* background-color: var(--main-color); */
+    border-radius: .3rem;
+    text-transform: capitalize;
+    text-align: center;
+}
+.classique{
+    background-color: var(--main-color)
+}
+.classique:hover {
+    background-color: transparent;
+    border: 2px solid var(--main-color) ;
+}
+.project:hover{
+    background-color: var(--main-color)
+}

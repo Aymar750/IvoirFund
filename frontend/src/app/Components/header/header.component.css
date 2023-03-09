@@ -57,3 +57,29 @@
 .btn:hover{
     background-color: var(--black);
 }
+
+@media screen and (max-width:768px){
+    
+    #menu-btn{
+        display: inline-block;
+    }
+    .header .flex .navbar{
+        position: absolute;
+        top: 99%;
+        left: 0;
+        right: 0;
+        border-top: var(--border);
+        background-color: var(--white);
+        padding: 1rem .5rem;
+        clip-path: polygon(0 0,100% 0,100% 0,0 0);
+        transition: .3s linear;
+        
+    }
+    .header .flex .navbar.active{
+        clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+    }
+    .header .flex .navbar a{
+        display: block;
+        padding: 1.5rem 2rem;
+    }
+}

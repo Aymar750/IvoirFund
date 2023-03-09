@@ -1,0 +1,114 @@
+.flex-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: .8rem;
+    flex-wrap: wrap;
+}
+.box-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 35rem);
+    gap: 1.5rem;
+    align-items: flex-start;
+    justify-content: center;
+}
+.box-container .box{
+    background-color: var(--white);
+    border-radius: .5rem;
+    border: var(--border);
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    overflow-x: hidden;
+}
+.box-container .box .company {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.box-container .box .company img{
+    height: 15rem;
+    width: 100%;
+    object-fit: contain;
+}
+.box-container .box .company h3{
+    font-size: 1.8rem;
+    color: var(--black);
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    text-transform: capitalize;
+    padding-bottom: .3rem;
+}
+.box-container .box .company span {
+    color: var(--light-color);
+    font-size: 1rem;
+}
+
+.box-container .box .project-title {
+    font-size: 1.7rem;
+    color: var(--black);
+    text-transform: capitalize;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+.box-container .box .location {
+    padding: .5rem 0;
+    font-size: 1.4rem;
+    color: var(--light-color);
+}
+.box-container .box .location i{
+    margin-right: .5rem;
+    color: var(--main-color);
+}
+
+.box-container .box .tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.3rem 0;
+}
+
+.box-container .box .tags p{
+    padding: 1.3rem;
+    border-radius: .5rem;
+    background-color: var(--light-bg);
+    font-size: 1.4rem;
+    color: var(--light-color);
+}
+.box-container .box .tags p i{
+    margin-right: .5rem;
+    color: var(--black);
+}
+.btn{
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 1rem 3rem;
+    cursor: pointer;
+    font-size: 1.7rem;
+    color: var(--white);
+    border: 2px solid var(--main-color);
+    background-color: var(--main-color);
+    border-radius: .3rem;
+    text-transform: capitalize;
+    text-align: center;
+}
+.btn:hover{
+    background-color: var(--black);
+}
+
+.box-container .box .fa-heart {
+    background-color: var(--light-bg);
+    border-radius: .5rem;
+    color: var(--light-color);
+    font-size: 1.8rem;
+    cursor: pointer;
+    height: 4.5rem;
+    width: 5rem;
+    line-height: 4.5rem;
+}
+.box-container .box .fa-heart:hover{
+    background-color: var(--black);
+    color: var(--white);
+}
