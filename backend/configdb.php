@@ -1,26 +1,24 @@
-<?php
+<?php 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Credentials: true");
-header("Access-control-Allow-Methods: PUT,POST,GET,DELETE");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-type, Accept");
-header("Content-type: application/json");
+header('Access-Control-Allow-Credentials: true');
+header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header("Content-Type: application/json; charset=UTF-8");
 
-// Variables de connexion
 $host = 'localhost';
 $dbname = 'ivoirfund';
 $user = 'postgres';
 $password = 12136270;
 
-// Connexion à la base de données
+// Connexion à la base de données PostgreSQL avec PDO
 try {
-    $dsn = "pgsql:host=$host;dbname=$dbname";
-    $conn = new PDO($dsn, $user, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connexion réussie !";
-} catch (PDOException $e) {
-    echo "Connexion échouée : " . $e->getMessage();
+  $pdo = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
+  // Activer les erreurs PDO pour afficher les erreurs de requête SQL
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  echo "Connecté à la base de données.";
+} catch(PDOException $e) {
+  // Afficher l'erreur PDO
+  echo "Erreur de connexion à la base de données: " . $e->getMessage();
 }
 
-// Fermer la connexion
-$conn = null;
 ?>
