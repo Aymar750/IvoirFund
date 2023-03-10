@@ -1,0 +1,92 @@
+form{
+    background-color: var(--white);
+    box-shadow: var(--box-shadow);
+    border: var(--border);
+    border-radius: .5rem;
+    padding: 2rem;
+}
+form .flex{
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1rem;
+}
+form .flex .box{
+    flex: 1 1 40rem;
+}
+
+form .flex .box p{
+    font-size: 1.4rem;
+}
+form .flex .box p span{
+    color: var(--red);
+}
+form .flex .box .input {
+    width: 100%;
+    border-radius: .4rem;
+    padding: 1.4rem;
+    color: var(--black);
+    margin: 1rem 0;
+    background-color: var(--light-bg);
+    font-size: 1.6rem;
+}
+
+form .dropdown-container {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+form .dropdown-container .dropdown {
+    flex: 1 1 20rem;
+    position: relative;
+}
+
+form .dropdown-container .dropdown .output {
+    width: 100%;
+    background-color: var(--light-bg);
+    border-radius: .5rem;
+    padding: 1.4rem;
+    font-size: 1.6rem;
+    color: var(--black);
+    text-align: center;
+}
+form .dropdown-container .dropdown .output:placeholder-shown{
+    text-transform: capitalize;
+}
+
+form .dropdown-container .dropdown .lists {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: .3rem;
+    background-color: var(--white);
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    z-index: 10;
+    transform: scaleY(0);
+    transform-origin: top;
+}
+
+form .dropdown-container .dropdown .lists .items{
+    padding: 1.2rem 1.4rem;
+    border-radius: .5rem;
+    font-size: 1.5rem;
+    color: var(--black);
+    cursor: pointer;
+}
+
+form .dropdown-container .dropdown .lists .items:hover{
+    background-color: var(--light-bg);
+}
+
+form .dropdown-container .dropdown .lists:hover,
+form .dropdown-container .dropdown:hover .lists,
+form .dropdown-container .dropdown .output:focus + .lists,
+form .dropdown-container .dropdown .output:focus-within + .lists{
+    transform: scaleY(1);
+    transition: .2s linear;
+}

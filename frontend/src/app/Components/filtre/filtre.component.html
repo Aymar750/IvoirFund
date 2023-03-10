@@ -1,0 +1,52 @@
+<h1 class="heading">Filtre</h1>
+<form action="">
+    <div class="flex">
+        <div class="box">
+            <p>Nom du projet <span>*</span></p>
+            <input type="text" name="titre" placeholder="entrez la categorie ou le nom de projet" class="input">
+        </div>
+        <div class="box">
+            <p>Localisation du projet</p>
+            <input type="text" name="location" placeholder="entrez la localité" class="input">
+        </div>
+    </div>
+
+    <div class="dropdown-container">
+        <div class="dropdown">
+            <input type="text" placeholder="Date de poste" readonly name="date" class="output">
+            <div class="lists">
+                <p class="items">Aujourd'hui</p>
+                <p class="items">il y a 3 jours</p>
+                <p class="items">il ya 1 semaine</p>
+                <p class="items">il ya 15 jours</p>
+                <p class="items">il ya 1 mois</p>
+            </div>
+        </div>
+        <div class="dropdown">
+            <input type="text" placeholder="Budget estimé entre" readonly name="date" class="output">
+            <div class="lists">
+                <p class="items">100000 Fcfa - 300000 Fcfa</p>
+                <p class="items">300000 Fcfa - 500000 Fcfa</p>
+                <p class="items">500000 Fcfa - 1000000 Fcfa</p>
+                <p class="items">1000000 Fcfa - plus</p>
+            </div>
+        </div>
+        <div class="dropdown">
+            <input type="text" placeholder="Type d'investissement recherché" readonly name="date" class="output">
+            <div class="lists">
+                <p class="items">Financement par prêt</p>
+                <p class="items">Don</p>
+            </div>
+        </div>
+    </div>
+</form>
+ 
+<script>
+    let dropdown_items = document.querySelectorAll('form .dropdown-container .dropdown .lists .items');
+    dropdown_items.forEach(items => 
+        items.onclick = () =>{
+            items_parent = items.parentElement.parentElement;
+            let output = items_parent.querySelector('.output');
+            output.value = items.innerText;
+    })
+</script>
