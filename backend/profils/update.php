@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                 move_uploaded_file($photo_profil_tmp, $photo_profil);
             } else {
                 // Si le champ photo_profil n'est pas présent, laisser le champ existant inchangé
-                $stmt = $pdo->prepare('SELECT photo_profil FROM Profils WHERE utilisateur_id = :id');
+                $stmt = $pdo->prepare('SELECT photo_profil FROM Profiles WHERE utilisateur_id = :id');
                 $stmt->execute(['id' => $id]);
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $photo_profil = $row['photo_profil'];
@@ -34,11 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
 
             try {
                 // Mettre à jour le profil correspondant à l'ID de l'utilisateur avec les nouvelles données
-                $stmt = $pdo->prepare('UPDATE Profils SET nom = :nom, bio = :bio, photo_profil = :photo_profil WHERE utilisateur_id = :id');
+                $stmt = $pdo->prepare('UPDATE Profiles SET nom = :nom, bio = :bio, photo_profil = :photo_profil WHERE utilisateur_id = :id');
                 $stmt->execute(['nom' => $nom, 'bio' => $bio, 'photo_profil' => $photo_profil, 'id' => $id]);
 
                 // Récupérer le profil mis à jour pour renvoyer les données actualisées
-                $stmt = $pdo->prepare('SELECT * FROM Profils WHERE utilisateur_id = :id');
+                $stmt = $pdo->prepare('SELECT * FROM Profiles WHERE utilisateur_id = :id');
                 $stmt->execute(['id' => $id]);
                 $profil = $stmt->fetch(PDO::FETCH_ASSOC);
 

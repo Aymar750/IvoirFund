@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
 
         try {
             // Supprimer le profil correspondant à l'ID de l'utilisateur
-            $stmt = $pdo->prepare('DELETE FROM Profils WHERE utilisateur_id = :id');
+            $stmt = $pdo->prepare('DELETE FROM Profiles WHERE utilisateur_id = :id');
             $stmt->execute(['id' => $id]);
 
             // Vérifier si des lignes ont été affectées par la suppression

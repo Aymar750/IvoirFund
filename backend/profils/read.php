@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         try {
         // Récupérer le profil correspondant à l'ID de l'utilisateur
-        $stmt = $pdo->prepare('SELECT * FROM Profils WHERE utilisateur_id = :id');
+        $stmt = $pdo->prepare('SELECT * FROM Profiles WHERE utilisateur_id = :id');
         $stmt->execute(['id' => $id]);
         $profil = $stmt->fetch(PDO::FETCH_ASSOC);
 

@@ -12,16 +12,16 @@ if(isset($postdata) && !empty($postdata)){
 
     // Vérifier que toutes les données requises sont présentes
     if(
-        isset($data['utilisateur_id']) &&
+        isset($data['user_id']) &&
         isset($data['nom']) &&
         isset($_FILES['photo_profil'])
     ){
         
         try{
             // Vérifier si l'utilisateur avec l'ID donné existe dans la table Utilisateurs
-            $sql = "SELECT COUNT(*) AS count FROM utilisateurs WHERE id = :utilisateur_id";
+            $sql = "SELECT COUNT(*) AS count FROM users WHERE id = :user_id";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindValue(':utilisateur_id', $data['utilisateur_id']);
+            $stmt->bindValue(':user_id', $data['user_id']);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if($row['count'] == 0){
@@ -41,14 +41,14 @@ if(isset($postdata) && !empty($postdata)){
         $fileContent = file_get_contents($_FILES['photo_profil']['tmp_name']);
 
         // Préparer la requête SQL pour insérer une nouvelle ligne dans la table Profils
-        $sql = "INSERT INTO profils (utilisateur_id, nom, bio, photo_profil) 
-                VALUES (:utilisateur_id, :nom, :bio, :photo_profil)";
+        $sql = "INSERT INTO profiles (user_id, nom, bio, photo_profil) 
+                VALUES (:user_id, :nom, :bio, :photo_profil)";
 
         // Utiliser PDO pour préparer la requête SQL
         $stmt = $pdo->prepare($sql);
 
         // Lier les valeurs des paramètres avec les valeurs du tableau associatif PHP
-        $stmt->bindValue(':utilisateur_id', $data['utilisateur_id']);
+        $stmt->bindValue(':user_id', $data['user_id']);
         $stmt->bindValue(':nom', $data['nom']);
         $stmt->bindValue(':bio', isset($data['bio']) ? $data['bio'] : null);
         $stmt->bindValue(':photo_profil', $fileContent, PDO::PARAM_LOB);
