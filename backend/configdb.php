@@ -6,7 +6,7 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 header("Content-Type: application/json; charset=UTF-8");
 
 $host = 'localhost';
-$dbname = 'ivoirfund';
+$dbname = 'dbivoirfund';
 $user = 'postgres';
 $password = 12136270;
 

@@ -1,64 +1,42 @@
 <?php
+
 include_once("../configdb.php");
 
+// Récupération des données du formulaire d'inscription
 $postdata = file_get_contents("php://input");
 $request = json_decode($postdata);
 
-if(isset($postdata) && !empty($postdata)) {
+// Vérification que les données sont valides
+if(isset($request->name) && isset($request->email) && isset($request->password)) {
+    $name = $request->name;
+    $email = $request->email;
+    $password = password_hash($request->password, PASSWORD_DEFAULT);
 
-  // Extraire les données du formulaire d'inscription
-  $nom_utilisateur = trim($request->nom_utilisateur);
-  $email_utilisateur = trim($request->email_utilisateur);
-  $mot_de_passe = trim($request->mot_de_passe);
+    // Vérification que l'utilisateur n'existe pas déjà
+    $query = $pdo->prepare("SELECT * FROM users WHERE name = :name OR email = :email");
+    $query->execute(['name' => $name, 'email' => $email]);
 
-  // Vérifier que les champs du formulaire ne sont pas vides
-  if(!empty($nom_utilisateur) && !empty($email_utilisateur) && !empty($mot_de_passe)) {
-    
-    // Vérifier si l'utilisateur avec le nom d'utilisateur ou l'adresse email_utilisateur fourni existe déjà
-    $query = "SELECT * FROM utilisateurs WHERE email_utilisateur = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([ $email_utilisateur]);
-
-    // Si l'utilisateur existe déjà, retourner une erreur
-    if($stmt->rowCount() > 0) {
-      http_response_code(400);
-      echo "L'utilisateur existe déjà.";
-      exit;
+    if($query->rowCount() > 0) {
+        http_response_code(409);
+        echo json_encode(['message' => 'Cet utilisateur existe déjà']);
+        exit();
     }
 
-    // Si l'utilisateur n'existe pas, créer un nouvel utilisateur avec les informations fournies
-    $query = "INSERT INTO utilisateurs (nom_utilisateur, email_utilisateur, mot_de_passe,date_inscription) VALUES (?, ?, ? , now())";
-    $stmt = $pdo->prepare($query);
+    // Insertion des données de l'utilisateur dans la base de données
+    $query = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+    $result = $query->execute(['name' => $name, 'email' => $email, 'password' => $password]);
 
-    // Hasher le mot de passe avec la fonction password_hash() de PHP
-    $hashed_password = password_hash($mot_de_passe, PASSWORD_DEFAULT);
-
-    // Exécuter la requête pour créer l'utilisateur
-    if($stmt->execute([$nom_utilisateur, $email_utilisateur, $hashed_password])) {
-
-      // Si l'utilisateur est créé avec succès, retourner les informations de l'utilisateur en tant que réponse JSON
-      $user_id = $pdo->lastInsertId();
-      $user = array(
-        "id_utilisateur" => $user_id,
-        "nom_utilisateur" => $nom_utilisateur,
-        "email_utilisateur" => $email_utilisateur
-      );
-      http_response_code(201);
-      echo json_encode($user);
-      exit;
+    if($result) {
+        http_response_code(201);
+        echo json_encode(['message' => 'Utilisateur créé avec succès']);
+        exit();
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Une erreur est survenue lors de la création de l\'utilisateur']);
+        exit();
     }
-    else {
-      // Si la création de l'utilisateur échoue, retourner une erreur
-      http_response_code(400);
-      echo "Erreur de création de l'utilisateur.";
-      exit;
-    }
-  }
-  else {
-    // Si l'un des champs du formulaire est vide, retourner une erreur
+} else {
     http_response_code(400);
-    echo "Veuillez remplir tous les champs.";
-    exit;
-  }
+    echo json_encode(['message' => 'Données invalides']);
+    exit();
 }
-?>
