@@ -1,24 +1,34 @@
-<?php 
+<?php
+// Inclure le fichier de configuration de la base de données
 include_once("../configdb.php");
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
+// Vérifier si les données POST existent
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = json_decode(file_get_contents("php://input"));
 
-    // Vérifier que le champ de la catégorie n'est pas vide
-    if(!empty($data->nom_categorie)) {
-        $nom_categorie = $data->nom_categorie;
-        $stmt = $pdo->prepare("INSERT INTO categories (nom_categorie) VALUES (?)");
-        $stmt->execute([$nom_categorie]);
+    // Récupérer les valeurs des champs
+    $name = $data->name;
+    $description = $data->description;
 
-        // Retourner l'ID de la catégorie nouvellement créée
-        $lastInsertId = $pdo->lastInsertId();
-        echo json_encode(['id' => $lastInsertId, 'nom_categorie' => $nom_categorie]);
-        exit;
+    // Préparer la requête SQL d'insertion
+    $query = "INSERT INTO Project_categories (name, description) VALUES (:name, :description)";
+
+    // Préparer la requête pour l'exécution avec PDO
+    $stmt = $pdo->prepare($query);
+
+    // Liaison des valeurs aux paramètres de la requête
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':description', $description);
+
+    // Exécuter la requête et vérifier le résultat
+    if ($stmt->execute()) {
+        http_response_code(201);
+        echo json_encode(array("message" => "La catégorie de projet a été créée avec succès."));
     } else {
-        // Si le champ est vide, retourner une erreur
-        http_response_code(400);
-        echo "Le champ de la catégorie ne doit pas être vide.";
-        exit;
+        http_response_code(503); // code d'erreur du service indisponible
+        echo json_encode(array("message" => "Impossible de créer la catégorie de projet."));
     }
+} else {
+    http_response_code(400); // code d'erreur de la requête incorrecte
+    echo json_encode(array("message" => "Les données de la requête sont incomplètes."));
 }

@@ -10,6 +10,7 @@ function jwt_encode($payload, $secret) {
 
 // Decode un jeton JWT et retourne le tableau associatif correspondant
 function jwt_decode($token, $secret) {
+    
     $parts = explode('.', $token);
     $header = base64_decode($parts[0]);
     $payload = base64_decode($parts[1]);
