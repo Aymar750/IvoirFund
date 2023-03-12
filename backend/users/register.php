@@ -8,8 +8,8 @@ $request = json_decode($postdata);
 
 // Vérification que les données sont valides
 if(isset($request->name) && isset($request->email) && isset($request->password)) {
-    $name = $request->name;
-    $email = $request->email;
+    $name = htmlspecialchars($request->name) ;
+    $email = htmlspecialchars($request->email) ;
     $password = password_hash($request->password, PASSWORD_DEFAULT);
 
     // Vérification que l'utilisateur n'existe pas déjà

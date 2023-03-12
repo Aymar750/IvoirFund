@@ -21,6 +21,7 @@ try {
     $jwt_token = jwt_encode($jwt_payload, $jwt_secret);
 
     http_response_code(200);
+    header('Content-Type: application/json');
     echo json_encode(['message' => 'Déconnexion réussie']);
 } catch (Exception $e) {
     http_response_code(401);
