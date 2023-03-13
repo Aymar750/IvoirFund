@@ -1,0 +1,151 @@
+.flex-compte{
+    display: flex;
+}
+.layout{
+    margin-left: 30px;
+    margin-top: 10px;
+}
+.slider{
+    background-color: white;
+    min-height: 500px;
+    width:18.2rem;
+    margin-left: 50px;
+    margin-top: 10px;
+    position: relative;
+    padding-top:1rem;
+    transition: 0.3s ease;
+}
+.close{
+    width:8rem;
+}
+.slider.close .text{
+    opacity: 0;
+}
+.slider.close .childs{
+    width:4rem;
+    margin-left:1.4rem;
+}
+
+.slider.close .searchbtn{
+    opacity: 0;
+}
+.slider.close .search{
+    width:4rem;
+    margin-left: 1.4rem;
+}
+.slider.close .profile{
+    padding-left: 0.5rem;
+}
+.image{
+    border-radius: 50%;
+    height: 6rem;
+    width:6rem;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+.maintext{
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+a{
+    text-decoration: none;
+
+    color:black !important;
+}
+.childs:hover >a{
+    color:white;
+}
+.fa-arrow-right-long{
+    font-size: 1rem;
+    color:white;
+}
+.profile{
+    display: flex;
+    /* border: 2px solid black; */
+    padding-left: 2rem;
+    align-items: center;
+    width:18rem;
+    margin-bottom: 40px;
+}
+ .notifications , .dashboard , .messages , .heart , .logout , .coins{
+    height: 3.5rem;
+    margin: 1.4rem;
+    display: flex;
+    border-radius: 0.4rem;
+    width:16rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+    font-size: 1.5rem;
+}
+.notifications:hover .not, .dashboard:hover .dash,.messages:hover .mess,.heart:hover .like, .logout:hover .log,.coins:hover .money {
+    color: var(--main-color);
+    opacity: 1;
+}
+
+
+.childs{
+    transition: 0.15s ease;
+}
+.slider.close .icons{
+    margin-left: 0.8rem;
+}
+.childs:hover{
+    background-color: var(--main-color);
+    color:white;
+}
+.text{
+    margin-left:1.8rem;
+}
+
+::-webkit-search-cancel-button{
+    display: none;
+}
+hr{
+    border: 0.5px solid rgb(115, 115, 115);
+    background-color: rgb(105, 105, 105);
+}
+.linkcolor{
+    color:white !important;	
+}
+
+.color{
+    color:white;
+}
+
+
+@media (max-width:550px) {
+    .image{
+        height: 3.3rem;
+        width:3.3rem;
+    }
+    .close{
+        width:5rem;
+    }
+    .slider.close .childs{
+        width:4rem;
+        margin-left:0.4rem;
+    }
+    .slider.close .toggle{
+        margin-left:0.4rem;
+    }
+    .slider.close .searchbtn{
+        opacity: 0;
+    }
+    .slider.close .search{
+        width:4rem;
+        margin-left: 0.4rem;
+    }
+    .slider.close .profile{
+        padding-left: 0.5rem;
+    }
+    .arrow{
+        height: 1.4rem;
+        width:1.4rem;
+    }
+    .fa-arrow-right-long{
+        font-size: 0.8rem;
+    }
+}

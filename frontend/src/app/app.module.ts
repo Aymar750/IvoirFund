@@ -11,6 +11,13 @@ import { CategorieComponent } from './Components/categorie/categorie.component';
 import { ProjetComponent } from './Components/projet/projet.component';
 import { ProjetsComponent } from './Components/pages/projets/projets.component';
 import { FiltreComponent } from './Components/filtre/filtre.component';
+import { LoginComponent } from './Components/pages/login/login.component';
+import { RegisterComponent } from './Components/pages/register/register.component';
+import { CompteComponent } from './Components/pages/compte/compte.component';
+import { DashcompteComponent } from './Components/dashcompte/dashcompte.component';
+import { NotifComponent } from './Components/pages/compte/notif/notif.component';
+import { MessageComponent } from './Components/pages/compte/message/message.component';
+import { ProfilComponent } from './Components/pages/compte/profil/profil.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +29,15 @@ import { FiltreComponent } from './Components/filtre/filtre.component';
     CategorieComponent,
     ProjetComponent,
     ProjetsComponent,
-    FiltreComponent
+    FiltreComponent,
+    LoginComponent,
+    RegisterComponent,
+    CompteComponent,
+    DashcompteComponent,
+    NotifComponent,
+    MessageComponent,
+    ProfilComponent,
+ 
   ],
   imports: [
     BrowserModule,

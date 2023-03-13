@@ -1,0 +1,56 @@
+.account-form-container .account-form {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.account-form-container .account-form form{
+    background-color: var(--white);
+    border-radius: .5rem;
+    padding: 2rem;
+    text-align: center;
+}
+.account-form-container .account-form form h3{
+    font-size: 2rem;
+    color: var(--black);
+    text-transform: capitalize;
+    margin-bottom: 1rem;
+}
+.account-form-container .account-form form .input{
+    width: 100%;
+    margin: 1rem 0;
+    font-size: 1.6rem;
+    padding: 1.4rem;
+    background-color: var(--light-bg);
+    border-radius: .5rem;
+}
+.account-form-container .account-form form p{
+    padding: 1rem 0;
+    font-size: 1.2rem;
+    color: var(--light-color);
+
+}
+.account-form-container .account-form form p a{
+    color: var(--main-color);
+    text-decoration: none;
+}
+.account-form-container .account-form form p a:hover{
+    color: var(--black);
+    text-decoration: underline;
+}
+.btn{
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 1rem 3rem;
+    cursor: pointer;
+    font-size: 1.7rem;
+    color: var(--white);
+    background-color: var(--main-color);
+    border-radius: .3rem;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+.btn:hover{
+    background-color: var(--black);
+}
