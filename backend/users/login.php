@@ -2,6 +2,10 @@
 include_once("../configdb.php");
 include_once("../jwt.php");
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 // Récupération des données envoyées en POST
 $postdata = file_get_contents("php://input");
 $request = json_decode($postdata);
@@ -10,7 +14,7 @@ $request = json_decode($postdata);
 if (!isset($request->name) || !isset($request->password)) {
     http_response_code(400);
     echo json_encode(['message' => 'Veuillez saisir un nom d\'utilisateur et un mot de passe']);
-    exit;
+
 }
 
 // Récupération des données utilisateur correspondant au nom d'utilisateur fourni

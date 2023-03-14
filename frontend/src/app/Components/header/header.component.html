@@ -9,7 +9,12 @@
             <a routerLink="accueil"> Accueil</a>
             <a routerLink="projets">Tous les projets</a>
             <a href="#">Contact</a>
-            <a href="compte">Mon Compte</a>
+            <span *ngIf="!isLoggedIn">
+                <a href="compte">Mon Compte</a>
+            </span>
+            <span *ngIf="isLoggedIn">
+                yann
+            </span>
         </nav>
 
         <a href="#" class="btn"style="margin-top:0;">Lancer mon projet</a>

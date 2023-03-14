@@ -30,11 +30,10 @@ export class RegisterComponent implements OnInit {
     const formValue = this.registerForm.value
     this.registerService.register(formValue.name,formValue.email,formValue.password).subscribe({next: () => {
       this.success = true;
-      console.log('tydgwhifjkdg')
     },error: (err) => {
       console.log(err);
       
-      if(err.error.code == 404){
+      if(err.error.code == 409){
         this.errMessage = 'le nom de cette entreprise existe deja';
       }else{
         this.errMessage = 'Quelque chose s\'est mal passé';

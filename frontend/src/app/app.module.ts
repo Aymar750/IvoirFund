@@ -19,6 +19,7 @@ import { NotifComponent } from './Components/pages/compte/notif/notif.component'
 import { MessageComponent } from './Components/pages/compte/message/message.component';
 import { ProfilComponent } from './Components/pages/compte/profil/profil.component';
 import { HttpClientModule , HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import { HttpClientModule , HTTP_INTERCEPTORS } from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
- 
+    {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true}
   ],
   bootstrap: [AppComponent]
 })

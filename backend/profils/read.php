@@ -1,14 +1,25 @@
 <?php
 include_once("../configdb.php");
 
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Vérifier si l'ID de l'utilisateur est présent dans l'URL
+    $postdata = file_get_contents("php://input");
+    $request = json_decode($postdata);
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
+        $name = $request->name;
 
         try {
         // Récupérer le profil correspondant à l'ID de l'utilisateur
-        $stmt = $pdo->prepare('SELECT * FROM Profiles WHERE utilisateur_id = :id');
+        $stmt = $pdo->prepare('SELECT Profiles.name as profile_name
+        FROM Users
+        JOIN Profiles ON Users.id = Profiles.user_id
+        WHERE Users.name = :name');
         $stmt->execute(['id' => $id]);
         $profil = $stmt->fetch(PDO::FETCH_ASSOC);
 
