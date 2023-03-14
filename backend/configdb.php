@@ -15,7 +15,7 @@ try {
   $pdo = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
   // Activer les erreurs PDO pour afficher les erreurs de requête SQL
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  echo "Connecté à la base de données.";
+  
 } catch(PDOException $e) {
   // Afficher l'erreur PDO
   echo "Erreur de connexion à la base de données: " . $e->getMessage();

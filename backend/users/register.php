@@ -2,6 +2,10 @@
 
 include_once("../configdb.php");
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 // Récupération des données du formulaire d'inscription
 $postdata = file_get_contents("php://input");
 $request = json_decode($postdata);
@@ -29,7 +33,8 @@ if(isset($request->name) && isset($request->email) && isset($request->password))
     if($result) {
         http_response_code(201);
         echo json_encode(['message' => 'Utilisateur créé avec succès']);
-        exit();
+        // exit();
+        return json_encode(['message' => 'Utilisateur créé avec succès']);
     } else {
         http_response_code(500);
         echo json_encode(['message' => 'Une erreur est survenue lors de la création de l\'utilisateur']);

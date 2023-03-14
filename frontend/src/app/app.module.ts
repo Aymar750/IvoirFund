@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './Components/header/header.component';
@@ -18,6 +18,7 @@ import { DashcompteComponent } from './Components/dashcompte/dashcompte.componen
 import { NotifComponent } from './Components/pages/compte/notif/notif.component';
 import { MessageComponent } from './Components/pages/compte/message/message.component';
 import { ProfilComponent } from './Components/pages/compte/profil/profil.component';
+import { HttpClientModule , HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -41,9 +42,14 @@ import { ProfilComponent } from './Components/pages/compte/profil/profil.compone
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+ 
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
