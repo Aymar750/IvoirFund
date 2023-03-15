@@ -1,7 +1,7 @@
 <div class="account-form-container">
     <section class="account-form">
 
-        <form action="" method="post" [formGroup]='loginForm' (submit)="login()">
+        <form action="" method="post" [formGroup]='loginForm' (submit)="loginUser()">
             <h3>Se connecter</h3>
             <input type="text" required name="name" maxlength="60" placeholder="Entrez votre nom" class="input" formControlName="name">
             <input type="password" required name="password" maxlength="50" placeholder="entrez votre mot de passe" maxLength="50" class="input" formControlName="password">
@@ -9,7 +9,7 @@
             <!-- <input type="submit" required name="connexion" value="Continuer"class="btn"> -->
             <!-- <a href="/compte" class="btn">Continuer</a> -->
             <input type="submit" value="Continuer" class="btn">
-            <p *ngIf="message" style="color: red;" class="alert alert-danger alert-dismissible fade show">{{message}}</p>
+            <!-- <p *ngIf="message" style="color: red;" class="alert alert-danger alert-dismissible fade show">{{message}}</p> -->
         </form>
 
     </section>

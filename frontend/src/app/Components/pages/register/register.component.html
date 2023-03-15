@@ -1,7 +1,7 @@
 <div class="account-form-container">
     <section class="account-form">
 
-        <form action="" method="post" [formGroup]='registerForm'(submit)="register()" autocomplete="off">
+        <form action="" method="post" [formGroup]='registerForm'(submit)="registerUser()" autocomplete="off">
             <h3>S'inscrire</h3>
             <input type="text" required name="name" maxlength="60" placeholder="Entrez votre nom ou nom de l'entreprise" class="input" formControlName="name">
             <input type="email" required name="email" placeholder="Entrez votre email" class="input"formControlName="email">
@@ -10,8 +10,8 @@
             <p>Vous avez un compte? <a href="/login">Connectez vous</a></p>
             <input type="submit" required name="inscrire" value="Continuer"class="btn">
             <br>
-            <div *ngIf="success" style="color: green;">Enregistrement réussi <a routerLink="/login" >Login</a></div>
-    <p *ngIf="errMessage" style="color: red;" class="alert alert-danger alert-dismissible fade show">{{errMessage}}</p>
+            <!-- <div *ngIf="success" style="color: green;">Enregistrement réussi <a routerLink="/login" >Login</a></div>
+    <p *ngIf="errMessage" style="color: red;" class="alert alert-danger alert-dismissible fade show">{{errMessage}}</p> -->
         </form>
 
     </section>

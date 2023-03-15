@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Emitter } from 'src/app/emitters/authEmitter';
-import { CompteService } from '../../../services/compte.service';
+import { AuthService } from 'src/app/shared/auth.service';
 
 
 @Component({
@@ -9,9 +8,12 @@ import { CompteService } from '../../../services/compte.service';
   styleUrls: ['./compte.component.css']
 })
 export class CompteComponent implements OnInit {
-  name= null;
 
-  constructor(private compteService: CompteService) { }
+
+  constructor(private authService: AuthService) { }
+  logout() {
+    this.authService.doLogout();
+  }
   ngOnInit(): void {
 
     // this.compteService.accessCompte().subscribe({next: (res) => {

@@ -10,6 +10,7 @@ import { NotifComponent } from './Components/pages/compte/notif/notif.component'
 import { ProjetComponent } from './Components/pages/compte/projet/projet.component';
 import { MessageComponent } from './Components/pages/compte/message/message.component';
 import { ProfilComponent } from './Components/pages/compte/profil/profil.component';
+import { AuthGuard } from './shared/auth.guard';
 
 const routes: Routes = [
   { path: '',redirectTo:'accueil', pathMatch: 'full' },
@@ -19,11 +20,11 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path: 'compte', component: CompteComponent,
   children: [
-    { path: 'tableauBord', component: DashcompteComponent },
-    { path: 'notifications', component: NotifComponent },
-    { path: 'mes-projets', component: ProjetComponent },
-    { path: 'messages', component: MessageComponent },
-    { path: 'mon-profil', component: ProfilComponent },
+    { path: 'tableauBord', component: DashcompteComponent , canActivate: [AuthGuard]},
+    { path: 'notifications', component: NotifComponent , canActivate: [AuthGuard]},
+    { path: 'mes-projets', component: ProjetComponent , canActivate: [AuthGuard]},
+    { path: 'messages', component: MessageComponent , canActivate: [AuthGuard]},
+    { path: 'mon-profil', component: ProfilComponent , canActivate: [AuthGuard]},
     { path: '',redirectTo:'tableauBord', pathMatch: 'full' },
   ]
 },
