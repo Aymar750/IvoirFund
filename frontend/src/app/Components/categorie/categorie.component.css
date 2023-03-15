@@ -7,6 +7,7 @@
 }
 
 .box-container .box{
+    width: 25rem;
     border-radius: .3rem;
     box-shadow: var(--box-shadow);
     border: var(--border);
