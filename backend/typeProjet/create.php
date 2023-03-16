@@ -13,7 +13,7 @@ if (!isset($request->name)) {
 }
 
 // Créer la requête SQL pour insérer un nouvel enregistrement
-$sql = "INSERT INTO funding_type (name) VALUES (:name)";
+$sql = "INSERT INTO funding_types (name) VALUES (:name)";
 $stmt = $pdo->prepare($sql);
 
 // Binder les paramètres de la requête

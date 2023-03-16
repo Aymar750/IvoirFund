@@ -2,7 +2,7 @@
 include_once("../configdb.php");
 
 // Requête SQL pour récupérer tous les types de financement
-$sql = "SELECT * FROM funding_type";
+$sql = "SELECT * FROM funding_types";
 
 // Préparation de la requête
 $stmt = $pdo->prepare($sql);

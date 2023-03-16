@@ -9,9 +9,19 @@ import { CategorieService } from '../../services/categorie.service';
 })
 export class CategorieComponent implements OnInit {
   allCategories : Categories[] = [];
+  projectCountByCategory!: any[];
   constructor(private categorieService: CategorieService) { }
   ngOnInit(): void {
     this.getCat();
+
+    this.getProjectCountByCategory();
+    // this.getProjectByCat();
+  }
+  getProjectCountByCategory() {
+    this.categorieService.getProjectsCountByCategory().subscribe((data)=> {
+      this.projectCountByCategory = data;
+    })
+    throw new Error('Method not implemented.');
   }
 
   getCat(){
@@ -21,4 +31,10 @@ export class CategorieComponent implements OnInit {
       this.allCategories = data;
     })
   }
+  // getProjectByCat(){
+  //   this.categorieService.getProjectsbyCat().subscribe((data)=> {
+  //     console.log(data);
+  //     this.projectCat = data;
+  //   })
+  // }
 }

@@ -1,29 +1,40 @@
 <?php
 include_once("../configdb.php");
 
-// Récupérer les données de l'utilisateur dont on veut les projets associés
-$user_id = $_GET['user_id'];
+// Requête SELECT pour récupérer toutes les catégories de projets
+$query = "SELECT p.id AS project_id, p.title, p.description, p.creation_date, p.end_date, p.funding_goal,
+                c.id AS category_id, c.name AS category_name,
+                u.id AS user_id, u.name AS user_name, u.email, 
+                t.id AS type_id, t.name AS type_name, 
+                s.id AS status_id, s.name AS status_name,
+                co.id AS contribution_id, co.user_id AS contributor_id, co.amount, co.contribution_date,
+                r.id AS reward_id, r.title AS reward_title, r.description AS reward_description, r.minimum_amount, r.quantity_available,
+                cm.id AS comment_id, cm.user_id AS commenter_id, cm.content AS comment_content, cm.creation_date AS comment_date,
+                i.id AS image_id, i.filename, i.filetype, i.file_path, i.description AS image_description
+                FROM projects p
+                LEFT JOIN project_categories c ON p.category_id = c.id
+                LEFT JOIN users u ON p.user_id = u.id
+                LEFT JOIN funding_types t ON p.funding_type_id = t.id
+                LEFT JOIN project_statuses s ON p.project_status_id = s.id
+                LEFT JOIN contributions co ON p.id = co.project_id
+                LEFT JOIN rewards r ON p.id = r.project_id
+                LEFT JOIN comments cm ON p.id = cm.project_id
+                LEFT JOIN images i ON p.id = i.project_id;
 
-// Préparation de la requête SELECT pour récupérer les projets liés à l'utilisateur
-$sql = "SELECT Projects.id, Projects.title, Projects.description, Projects.creation_date, Projects.end_date, Projects.funding_goal, Project_statuses.name as status_name, Project_categories.name as category_name
-        FROM Projects
-        INNER JOIN Project_statuses ON Projects.project_status_id = Project_statuses.id
-        INNER JOIN Project_categories ON Projects.category_id = Project_categories.id
-        WHERE Projects.user_id = :user_id
-        ORDER BY Projects.creation_date DESC";
 
-// Préparation de la requête préparée
-$stmt = $pdo->prepare($sql);
+                ";
 
-// Liaison des paramètres
-$stmt->bindParam(':user_id', $user_id);
+// Exécute la requête
+$stmt = $pdo->query($query);
 
-// Exécution de la requête préparée
-$stmt->execute();
+// Tableau pour stocker les résultats
+$projets = array();
 
-// Récupération des résultats sous forme de tableau associatif
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Parcours des résultats et stockage dans le tableau
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $projets[] = $row;
+}
 
-// Envoi de la réponse au format JSON
-header('Content-Type: application/json');
-echo json_encode($results);
+// Convertit le tableau en JSON et renvoie la réponse au client
+echo json_encode($projets);
+?>

@@ -1,5 +1,6 @@
+import { AuthService } from './../../../shared/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/shared/auth.service';
+
 
 
 @Component({
@@ -9,12 +10,13 @@ import { AuthService } from 'src/app/shared/auth.service';
 })
 export class CompteComponent implements OnInit {
 
-
   constructor(private authService: AuthService) { }
   logout() {
     this.authService.doLogout();
   }
+
   ngOnInit(): void {
+
 
     // this.compteService.accessCompte().subscribe({next: (res) => {
     //   this.name = res.name

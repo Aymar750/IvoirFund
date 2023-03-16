@@ -18,10 +18,11 @@ if(isset($postdata) && !empty($postdata)) {
         && isset($data->end_date)
         && isset($data->funding_goal)
         && isset($data->project_status_id)
+        && isset($data->funding_type_id)
     ) {
         // Préparer la requête SQL d'insertion dans la table Projects
-        $sql = "INSERT INTO Projects (user_id, title, description, category_id, end_date, funding_goal, project_status_id)
-                VALUES (:user_id, :title, :description, :category_id, :end_date, :funding_goal, :project_status_id)";
+        $sql = "INSERT INTO Projects (user_id, title, description, category_id, end_date, funding_goal, project_status_id,funding_type_id)
+                VALUES (:user_id, :title, :description, :category_id, :end_date, :funding_goal, :project_status_id,:funding_type_id)";
 
         try {
             // Préparer la requête SQL avec PDO
@@ -35,6 +36,7 @@ if(isset($postdata) && !empty($postdata)) {
             $stmt->bindParam(":end_date", $data->end_date, PDO::PARAM_STR);
             $stmt->bindParam(":funding_goal", $data->funding_goal, PDO::PARAM_STR);
             $stmt->bindParam(":project_status_id", $data->project_status_id, PDO::PARAM_INT);
+            $stmt->bindParam(":funding_type_id", $data->funding_type_id, PDO::PARAM_INT);
 
             // Exécuter la requête SQL
             $stmt->execute();

@@ -9,7 +9,6 @@ import {
 } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -31,12 +30,18 @@ export class AuthService {
   SignIn(user: User) {
     return this.http.post<any>(`${this.endpoint}/login.php`, user).subscribe((res:any) => {
       localStorage.setItem('token', res.token);
-      this.getUserProfile(res.id).subscribe((res:any) => {
+      localStorage.setItem('user', JSON.stringify(res.data));
+      this.getUserProfile(res.data.id).subscribe((res:any) => {
         this.currentUser = res;
-        console.log(res);
-        
-        this.router.navigate(['/compte/mon-profil'+ res.msg._id]);
+        console.log(this.currentUser);
+        this.router.navigate(['compte/tableauBord']);
       });
+      // this.getUserProfile(res.data.id).subscribe((res:any) => {
+      //   this.currentUser = res;
+      //   console.log(res);
+        
+      //   this.router.navigate(['/compte/mon-profil'+ res.msg._id]);
+      // });
     });
   }
 
@@ -56,7 +61,7 @@ export class AuthService {
   }
   //Get profil User
   getUserProfile(id: any): Observable<any> {
-    let api = `${this.endpoint}/readbyid/${id}`;
+    let api = `${this.endpoint}/readbyid.php/${id}`;
     return this.http.get<any>(api, {headers: this.headers}).pipe(map((res:any) => {
       return res || {};
     }),

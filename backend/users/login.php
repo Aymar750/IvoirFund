@@ -39,7 +39,11 @@ if ($user) {
         $jwt_token = jwt_encode($jwt_payload, $jwt_secret);
 
         http_response_code(200);
-        echo json_encode(['token' => $jwt_token]);
+        echo json_encode(['token' => $jwt_token,
+                        'data'=>[
+                            "name"=>$user['name'],
+                            "id"=>$user['id'],
+                                ]]);
     } else {
         // Mot de passe incorrect
         http_response_code(401);
