@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
   endpoint:string = 'http://localhost:8000/users';
   headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -31,7 +32,7 @@ export class AuthService {
     return this.http.post<any>(`${this.endpoint}/login.php`, user).subscribe((res:any) => {
       localStorage.setItem('token', res.token);
       localStorage.setItem('user', JSON.stringify(res.data));
-      this.getUserProfile(res.data.id).subscribe((res:any) => {
+      this.getUserProfile(res.data.user_id).subscribe((res:any) => {
         this.currentUser = res;
         console.log(this.currentUser);
         this.router.navigate(['compte/tableauBord']);

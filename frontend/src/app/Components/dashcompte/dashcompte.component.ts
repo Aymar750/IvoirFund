@@ -15,9 +15,9 @@ export class DashcompteComponent implements OnInit {
     const userString = localStorage.getItem('user');
     if(userString){
       const user = JSON.parse(userString);
-      this.authService.getUserProfile(user.id).subscribe({
+      this.authService.getUserProfile(user.user_id).subscribe({
         next: (res) => {
-            this.nom = res.name;
+            this.nom = res.user_name;
         }
       })
     }
