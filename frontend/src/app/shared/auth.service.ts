@@ -36,7 +36,7 @@ export class AuthService {
         this.currentUser = res;
         console.log(this.currentUser);
         this.router.navigate(['compte/tableauBord']);
-      });
+      });  
       // this.getUserProfile(res.data.id).subscribe((res:any) => {
       //   this.currentUser = res;
       //   console.log(res);
