@@ -57,6 +57,9 @@ section {
     margin: 0 auto;
     max-width: 1200px;
 }
+a:hover{
+    text-decoration: none !important;
+}
 .heading {
     margin-left: 4rem;
     margin-bottom: 2.5rem;
