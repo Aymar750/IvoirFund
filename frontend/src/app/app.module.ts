@@ -20,6 +20,7 @@ import { ProfilComponent } from './Components/pages/compte/profil/profil.compone
 import { HttpClientModule , HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CompteComponent } from './Components/pages/compte/compte.component';
 import { AuthInterceptor } from './shared/authconfig.interceptor';
+import { CampagneComponent } from './Components/pages/campagne/campagne.component';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { AuthInterceptor } from './shared/authconfig.interceptor';
     NotifComponent,
     MessageComponent,
     ProfilComponent,
+    CampagneComponent,
  
   ],
   imports: [

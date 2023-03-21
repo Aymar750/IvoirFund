@@ -11,6 +11,7 @@ import { ProjetComponent } from './Components/pages/compte/projet/projet.compone
 import { MessageComponent } from './Components/pages/compte/message/message.component';
 import { ProfilComponent } from './Components/pages/compte/profil/profil.component';
 import { AuthGuard } from './shared/auth.guard';
+import { CampagneComponent } from './Components/pages/campagne/campagne.component';
 
 const routes: Routes = [
   { path: '',redirectTo:'accueil', pathMatch: 'full' },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'projets', component: ProjetsComponent },
   { path: 'login', component: LoginComponent},
   { path: 'register', component: RegisterComponent},
+  { path: 'campaign', component: CampagneComponent},
   { path: 'compte', component: CompteComponent,
   children: [
     { path: 'tableauBord', component: DashcompteComponent , canActivate: [AuthGuard]},

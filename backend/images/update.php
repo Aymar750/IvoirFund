@@ -1,43 +1,55 @@
 <?php
 include_once("../configdb.php");
 
-// Récupérer l'ID de l'image à partir des paramètres GET
-if (isset($_GET['id'])) {
-    $image_id = $_GET['id'];
-} else {
-    http_response_code(400);
+// Vérification de la méthode de la requête
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
     exit();
 }
 
-// Récupérer les données de la requête POST
-$postdata = file_get_contents("php://input");
-if(isset($postdata) && !empty($postdata)) {
-    $request = json_decode($postdata);
-
-    // Vérifier que toutes les données requises ont été fournies
-    if (!isset($request->filename) || !isset($request->filetype) || !isset($request->file_path)) {
-        http_response_code(400);
-        exit();
-    }
-
-    // Préparer et exécuter la requête SQL pour mettre à jour l'image spécifique
-    $stmt = $pdo->prepare("UPDATE Images SET filename = :filename, filetype = :filetype, file_path = :file_path, description = :description WHERE id = :id");
-    $stmt->bindParam(':id', $image_id, PDO::PARAM_INT);
-    $stmt->bindParam(':filename', $request->filename, PDO::PARAM_STR);
-    $stmt->bindParam(':filetype', $request->filetype, PDO::PARAM_STR);
-    $stmt->bindParam(':file_path', $request->file_path, PDO::PARAM_STR);
-    $stmt->bindParam(':description', $request->description, PDO::PARAM_STR);
-    $stmt->execute();
-
-    // Vérifier si l'image a été mise à jour et retourner la réponse correspondante
-    if ($stmt->rowCount() > 0) {
-        http_response_code(200);
-        echo json_encode(["message" => "L'image a été mise à jour avec succès"]);
-    } else {
-        http_response_code(404);
-        echo json_encode(["message" => "Aucune image trouvée avec cet ID"]);
-    }
-} else {
-  http_response_code(400);
-  exit();
+// Vérification de l'ID de l'image
+if (!isset($_GET['id'])) {
+    http_response_code(400);
+    echo json_encode(array("message" => "L'ID de l'image est requis."));
+    exit();
 }
+$image_id = $_GET['id'];
+
+// Vérification de l'existence de l'image dans la base de données
+$stmt = $pdo->prepare("SELECT * FROM Images WHERE id = :id");
+$stmt->bindParam(':id', $image_id, PDO::PARAM_INT);
+$stmt->execute();
+$image = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$image) {
+    http_response_code(404);
+    echo json_encode(array("message" => "L'image n'existe pas."));
+    exit();
+}
+
+// Traitement de la requête
+$data = json_decode(file_get_contents("php://input"));
+if (isset($data->file_path)) {
+    $file_path = $data->file_path;
+} else {
+    $file_path = $image['file_path'];
+}
+
+if (isset($data->description)) {
+    $description = $data->description;
+} else {
+    $description = $image['description'];
+}
+
+$stmt = $pdo->prepare("UPDATE Images SET file_path = :file_path, description = :description WHERE id = :id");
+$stmt->bindParam(':file_path', $file_path, PDO::PARAM_STR);
+$stmt->bindParam(':description', $description, PDO::PARAM_STR);
+$stmt->bindParam(':id', $image_id, PDO::PARAM_INT);
+
+if ($stmt->execute()) {
+    http_response_code(200);
+    echo json_encode(array("message" => "L'image a été mise à jour."));
+} else {
+    http_response_code(500);
+    echo json_encode(array("message" => "Impossible de mettre à jour l'image."));
+}
+?>

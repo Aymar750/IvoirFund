@@ -1,50 +1,45 @@
-<?php
+<?
 include_once("../configdb.php");
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    // Vérifier si l'ID de l'utilisateur est présent dans l'URL
-    $postdata = file_get_contents("php://input");
-    $request = json_decode($postdata);
-    if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-        $name = $request->name;
 
-        try {
-        // Récupérer le profil correspondant à l'ID de l'utilisateur
-        $stmt = $pdo->prepare('SELECT Profiles.name as profile_name
-        FROM Users
-        JOIN Profiles ON Users.id = Profiles.user_id
-        WHERE Users.name = :name');
-        $stmt->execute(['id' => $id]);
-        $profil = $stmt->fetch(PDO::FETCH_ASSOC);
+if($_SERVER['REQUEST_METHOD'] == 'GET') {
+    // Récupérer l'id de l'utilisateur
+    $user_id = $_GET['user_id'];
 
-        // Vérifier si un profil a été trouvé pour cet utilisateur
-        if ($profil) {
-            // Si un profil a été trouvé, renvoyer une réponse JSON avec les données du profil
-            echo json_encode(['profil' => $profil]);
-            exit();
+    // Vérifier si l'utilisateur existe
+    $query = "SELECT COUNT(*) FROM Users WHERE id = ?";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([$user_id]);
+    $user_exists = ($stmt->fetchColumn() > 0);
+
+    if ($user_exists) {
+        // Récupérer le profil de l'utilisateur
+        $query = "SELECT * FROM Profiles WHERE user_id = ?";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$user_id]);
+        $profile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($profile) {
+            // Retourner le profil de l'utilisateur
+            header('Content-Type: application/json');
+            echo json_encode($profile);
         } else {
-            // Si aucun profil n'a été trouvé pour cet utilisateur, renvoyer une réponse JSON avec un message d'erreur correspondant
-            echo json_encode(['error' => 'Aucun profil trouvé pour cet utilisateur.']);
-            exit();
-        }
-        } catch (PDOException $e) {
-        // Si une exception PDO se produit, renvoyer une réponse JSON avec un message d'erreur correspondant
-        echo json_encode(['error' => 'Erreur lors de la requête SQL.', 'details' => $e->getMessage()]);
-        exit();
+            // Le profil n'a pas été trouvé pour cet utilisateur
+            http_response_code(404);
+            echo json_encode(array("message" => "Le profil n'a pas été trouvé pour cet utilisateur."));
         }
     } else {
-        // Si l'ID de l'utilisateur n'est pas présent dans l'URL, renvoyer une réponse JSON avec un message d'erreur correspondant
-        echo json_encode(['error' => 'ID utilisateur non spécifié dans l\'URL.']);
-        exit();
+        // L'utilisateur n'existe pas
+        http_response_code(404);
+        echo json_encode(array("message" => "L'utilisateur n'a pas été trouvé."));
     }
 } else {
-    // Si la méthode de la requête n'est pas GET, renvoyer une réponse JSON avec un message d'erreur correspondant
-    echo json_encode(['error' => 'Méthode non autorisée. Utilisez la méthode GET.']);
-    exit();
+    // La méthode HTTP n'est pas autorisée
+    http_response_code(405);
+    echo json_encode(array("message" => "Méthode non autorisée."));
 }
+?>

@@ -1,68 +1,55 @@
 <?php
 include_once("../configdb.php");
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-    // Vérifier si l'ID de l'utilisateur est présent dans l'URL
-    if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-
-        // Récupérer les données JSON de la requête PUT
-        $putdata = file_get_contents("php://input");
-        $data = json_decode($putdata, true);
-
-        // Vérifier si les données requises sont présentes dans la requête PUT
-        if (isset($data['nom']) && isset($data['bio'])) {
-            $nom = $data['nom'];
-            $bio = $data['bio'];
-
-            // Vérifier si le champ photo_profil est présent dans la requête PUT
-            if (isset($_FILES['photo_profil'])) {
-                // Si le champ photo_profil est présent, traiter le fichier uploadé
-                $upload_dir = 'uploads/';
-                $photo_profil = $upload_dir . basename($_FILES['photo_profil']['name']);
-                $photo_profil_tmp = $_FILES['photo_profil']['tmp_name'];
-
-                // Déplacer le fichier uploadé vers le dossier de destination
-                move_uploaded_file($photo_profil_tmp, $photo_profil);
-            } else {
-                // Si le champ photo_profil n'est pas présent, laisser le champ existant inchangé
-                $stmt = $pdo->prepare('SELECT photo_profil FROM Profiles WHERE utilisateur_id = :id');
-                $stmt->execute(['id' => $id]);
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $photo_profil = $row['photo_profil'];
-            }
-
-            try {
-                // Mettre à jour le profil correspondant à l'ID de l'utilisateur avec les nouvelles données
-                $stmt = $pdo->prepare('UPDATE Profiles SET nom = :nom, bio = :bio, photo_profil = :photo_profil WHERE utilisateur_id = :id');
-                $stmt->execute(['nom' => $nom, 'bio' => $bio, 'photo_profil' => $photo_profil, 'id' => $id]);
-
-                // Récupérer le profil mis à jour pour renvoyer les données actualisées
-                $stmt = $pdo->prepare('SELECT * FROM Profiles WHERE utilisateur_id = :id');
-                $stmt->execute(['id' => $id]);
-                $profil = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                // Si le profil a été mis à jour avec succès, renvoyer une réponse JSON avec les données du profil actualisées
-                echo json_encode(['profil' => $profil]);
-                exit();
-            } catch (PDOException $e) {
-                // Si une exception PDO se produit, renvoyer une réponse JSON avec un message d'erreur correspondant
-                echo json_encode(['error' => 'Erreur lors de la requête SQL.', 'details' => $e->getMessage()]);
-                exit();
-            }
-        } else {
-            // Si toutes les données requises ne sont pas présentes dans la requête PUT, renvoyer une réponse JSON avec un message d'erreur correspondant
-            echo json_encode(['error' => 'Toutes les données requises ne sont pas présentes.']);
-            exit();
-        }
-    } else {
-        // Si l'ID de l'utilisateur n'est pas présent dans l'URL, renvoyer une réponse JSON avec un message d'erreur correspondant
-        echo json_encode(['error' => 'ID de l\'utilisateur non spécifié dans l\'URL.']);
+    parse_str(file_get_contents("php://input"), $put_vars);
+    
+    // Vérification des champs obligatoires
+    if (!isset($put_vars['id']) || !isset($put_vars['user_id']) || !isset($put_vars['name'])) {
+        http_response_code(400);
+        echo json_encode(array("message" => "Tous les champs obligatoires doivent être renseignés"));
         exit();
     }
+    
+    $id = $put_vars['id'];
+    $user_id = $put_vars['user_id'];
+    $name = $put_vars['name'];
+    $bio = $put_vars['bio'] ?? null;
+    
+    // Vérification de l'existence de l'utilisateur
+    $query_check_user = "SELECT COUNT(*) as count FROM Users WHERE id=:user_id";
+    $stmt_check_user = $conn->prepare($query_check_user);
+    $stmt_check_user->bindParam(':user_id', $user_id);
+    $stmt_check_user->execute();
+    $row_check_user = $stmt_check_user->fetch(PDO::FETCH_ASSOC);
+    if ($row_check_user['count'] == 0) {
+        http_response_code(404);
+        echo json_encode(array("message" => "L'utilisateur n'existe pas"));
+        exit();
+    }
+    
+    // Mise à jour du profil
+    $query_update_profile = "UPDATE Profiles SET user_id=:user_id, name=:name, bio=:bio WHERE id=:id";
+    $stmt_update_profile = $conn->prepare($query_update_profile);
+    $stmt_update_profile->bindParam(':user_id', $user_id);
+    $stmt_update_profile->bindParam(':name', $name);
+    $stmt_update_profile->bindParam(':bio', $bio);
+    $stmt_update_profile->bindParam(':id', $id);
+    
+    if ($stmt_update_profile->execute()) {
+        http_response_code(200);
+        echo json_encode(array("message" => "Le profil a été mis à jour avec succès"));
+    } else {
+        http_response_code(503);
+        echo json_encode(array("message" => "Impossible de mettre à jour le profil"));
+    }
 } else {
-    // Si la méthode HTTP n'est pas PUT, renvoyer une réponse JSON avec un message d'erreur correspondant
-    echo json_encode(['error' => 'Méthode HTTP non autorisée.']);
-    exit();
+    http_response_code(405);
+    echo json_encode(array("message" => "Méthode non autorisée"));
 }
 ?>

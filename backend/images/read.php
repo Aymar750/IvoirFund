@@ -1,25 +1,27 @@
 <?php
 include_once("../configdb.php");
 
-// Récupérer l'ID du projet à partir des paramètres GET
-if (isset($_GET['project_id'])) {
-  $project_id = $_GET['project_id'];
-} else {
-  http_response_code(400);
-  exit();
+// Vérifier si l'id du projet est passé en paramètre
+if (!isset($_GET['project_id'])) {
+    http_response_code(400);
+    echo json_encode(array("message" => "L'id du projet est requis."));
+    exit();
 }
 
-// Préparer et exécuter la requête SQL pour récupérer les images liées au projet spécifique
-$stmt = $pdo->prepare("SELECT * FROM Images WHERE project_id = :project_id");
-$stmt->bindParam(':project_id', $project_id, PDO::PARAM_INT);
-$stmt->execute();
-$images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Requête pour récupérer toutes les images pour le projet spécifié
+$query = "SELECT * FROM Images WHERE project_id = ?";
+$stmt = $pdo->prepare($query);
+$stmt->execute(array($_GET['project_id']));
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Vérifier si des images ont été trouvées et retourner la réponse correspondante
-if ($images) {
-  http_response_code(200);
-  echo json_encode($images);
-} else {
-  http_response_code(404);
-  echo json_encode(["message" => "Aucune image trouvée pour ce projet"]);
+// Vérifier si le résultat est vide
+if (empty($result)) {
+    http_response_code(404);
+    echo json_encode(array("message" => "Aucune image trouvée pour le projet spécifié."));
+    exit();
 }
+
+// Afficher les résultats sous forme de JSON
+http_response_code(200);
+echo json_encode($result);
+?>

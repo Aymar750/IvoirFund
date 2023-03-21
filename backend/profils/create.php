@@ -1,81 +1,72 @@
 <?php
 include_once("../configdb.php");
 
-// Récupérer les données de la requête POST
-$postdata = file_get_contents("php://input");
-
-// Si des données sont présentes dans la requête POST
-if(isset($postdata) && !empty($postdata)){
-
-    // Convertir les données JSON en tableau associatif PHP
-    $data = json_decode($postdata, true);
-
-    // Vérifier que toutes les données requises sont présentes
-    if(
-        isset($data['user_id']) &&
-        isset($data['nom']) &&
-        isset($_FILES['photo_profil'])
-    ){
-        
-        try{
-            // Vérifier si l'utilisateur avec l'ID donné existe dans la table Utilisateurs
-            $sql = "SELECT COUNT(*) AS count FROM users WHERE id = :user_id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindValue(':user_id', $data['user_id']);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($row['count'] == 0){
-                // Si l'utilisateur n'existe pas, renvoyer une réponse JSON avec un message d'erreur correspondant
-                echo json_encode(['error' => 'L\'utilisateur avec l\'ID donné n\'existe pas.']);
-                exit();
-        }
-
-        // Vérifier si le fichier a été uploadé avec succès
-        if($_FILES['photo_profil']['error'] != UPLOAD_ERR_OK){
-            // Si l'upload a échoué, renvoyer une réponse JSON avec un message d'erreur correspondant
-            echo json_encode(['error' => 'Une erreur s\'est produite lors de l\'upload du fichier.']);
-            exit();
-        }
-
-        // Récupérer le contenu du fichier
-        $fileContent = file_get_contents($_FILES['photo_profil']['tmp_name']);
-
-        // Préparer la requête SQL pour insérer une nouvelle ligne dans la table Profils
-        $sql = "INSERT INTO profiles (user_id, nom, bio, photo_profil) 
-                VALUES (:user_id, :nom, :bio, :photo_profil)";
-
-        // Utiliser PDO pour préparer la requête SQL
-        $stmt = $pdo->prepare($sql);
-
-        // Lier les valeurs des paramètres avec les valeurs du tableau associatif PHP
-        $stmt->bindValue(':user_id', $data['user_id']);
-        $stmt->bindValue(':nom', $data['nom']);
-        $stmt->bindValue(':bio', isset($data['bio']) ? $data['bio'] : null);
-        $stmt->bindValue(':photo_profil', $fileContent, PDO::PARAM_LOB);
-
-        // Exécuter la requête SQL préparée
-        $stmt->execute();
-
-        // Renvoyer une réponse JSON pour indiquer que la nouvelle ligne a été insérée avec succès
-        echo json_encode(['message' => 'La nouvelle ligne a été insérée avec succès.']);
-        
-        } catch(PDOException $e){
-        // Si une erreur se produit lors de l'exécution de la requête SQL, renvoyer une réponse JSON avec le message d'erreur correspondant
-        echo json_encode([
-                'error' => 'Une erreur s\'est produite lors de l\'exécution de la requête SQL.', 
-                'details' => $e->getMessage()
-            ]);
-            exit();
-        }
-    } else {
-        // Si toutes les données requises ne sont pas présentes, renvoyer une réponse JSON avec un message d'erreur correspondant
-        echo json_encode(['error' => 'Toutes les données requises ne sont pas présentes.']);
-        exit();
-    }
-} else {
-    // Si aucune donnée n'est présente dans la requête POST, renvoyer une réponse JSON avec un message d'erreur correspondant
-    echo json_encode(['error' => 'Aucune donnée n\'est présente dans la requête POST.']);
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
     exit();
 }
 
+// Vérifier si la méthode HTTP est POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Récupérer les données du formulaire
+    $user_id = $_POST['user_id'];
+    $name = $_POST['name'];
+    $bio = $_POST['bio'];
 
+    // Vérifier si le champ profile_picture est défini
+    if (isset($_FILES['profile_picture'])) {
+        $file_name = $_FILES['profile_picture']['name'];
+        $file_tmp = $_FILES['profile_picture']['tmp_name'];
+        $file_size = $_FILES['profile_picture']['size'];
+        $file_type = $_FILES['profile_picture']['type'];
+
+        // Vérifier si le fichier est une image
+        $valid_extensions = array('jpeg', 'jpg', 'png');
+        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        if (in_array($file_extension, $valid_extensions)) {
+            // Enregistrer le fichier dans le dossier uploads
+            $upload_dir = '../uploads/';
+            $file_path = $upload_dir . $file_name;
+            move_uploaded_file($file_tmp, $file_path);
+
+            // Insérer les données dans la base de données
+            $sql = "INSERT INTO Profiles (user_id, name, bio, profile_picture) VALUES (:user_id, :name, :bio, :profile_picture)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'user_id' => $user_id,
+                'name' => $name,
+                'bio' => $bio,
+                'profile_picture' => $file_path
+            ]);
+
+            // Renvoyer la réponse en JSON
+            $response = [
+                'status' => 'success',
+                'message' => 'Profile created successfully'
+            ];
+            echo json_encode($response);
+        } else {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid file type']);
+        }
+    } else {
+        // Si le champ profile_picture n'est pas défini, insérer les données sans l'image
+        $sql = "INSERT INTO Profiles (user_id, name, bio) VALUES (:user_id, :name, :bio)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            'user_id' => $user_id,
+            'name' => $name,
+            'bio' => $bio
+        ]);
+
+        // Renvoyer la réponse en JSON
+        $response = [
+            'status' => 'success',
+            'message' => 'Profile created successfully'
+        ];
+        echo json_encode($response);
+    }
+} else {
+    http_response_code(405);
+    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+}
