@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CategorieService } from 'src/app/services/categorie.service';
+import { Categories } from '../../../Interfaces/categories';
+import { ProjetService } from '../../../services/projet.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-campagne',
@@ -7,31 +11,80 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./campagne.component.css']
 })
 export class CampagneComponent implements OnInit  {
-  personalDetails!: FormGroup;
-  projetsDetails!: FormGroup;
-  campaignDetails!: FormGroup;
+  allCategories : Categories[] = [];
+
+  // personalDetails!: FormGroup;
+  // projetsDetails!: FormGroup;
+  // campaignDetails!: FormGroup;
+  form!: FormGroup;
   step=1;
   selectedFile!: File | null;
   selectedFiles: (File | null)[] = [null, null, null];
   formValues: any[] = [];
 
-  constructor (private formBuilder:FormBuilder){}
+  constructor (private formBuilder:FormBuilder, 
+    private categorieService: CategorieService,
+    private projetService: ProjetService,
+    public router: Router){}
 
   ngOnInit(){
-    this.personalDetails = this.formBuilder.group({
-      name: ['', Validators.required],
-      email: ['', Validators.required],
-      phone: ['',Validators.required]
+    this.getCat();
+
+    this.form = this.formBuilder.group({
+      step1: this.formBuilder.group({
+        name: ['', Validators.required],
+        email: ['', Validators.required],
+        phone: ['',Validators.required],
+        web: [''],
+        social: ['',Validators.required],
+      }),
+      step2: this.formBuilder.group({
+        name: ['', Validators.required],
+        description: ['', Validators.required],
+        // file: ['',Validators.required],
+        contre: ['', Validators.required],
+        montant: ['', Validators.required],
+        cat: [null],
+      }),
+      step3:this.formBuilder.group({
+        datefin: ['', Validators.required],
+        // budget: ['',Validators.required]
+      })
     });
-    this.projetsDetails = this.formBuilder.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      file: ['',Validators.required]
-    });
-    this.campaignDetails = this.formBuilder.group({
-      datefin: ['', Validators.required],
-      budget: ['',Validators.required]
-    });
+    // this.personalDetails = this.formBuilder.group({
+    //   name: ['', Validators.required],
+    //   email: ['', Validators.required],
+    //   phone: ['',Validators.required],
+    //   web: [''],
+    //   social: ['',Validators.required],
+    // });
+    // this.projetsDetails = this.formBuilder.group({
+    //   name: ['', Validators.required],
+    //   description: ['', Validators.required],
+    //   file: ['',Validators.required],
+    //   contre: ['', Validators.required],
+    //   montant: ['', Validators.required],
+    //   cat: [null],
+    // });
+    // this.campaignDetails = this.formBuilder.group({
+    //   datefin: ['', Validators.required],
+    //   budget: ['',Validators.required]
+    // });
+  }
+  projet(){
+    this.projetService.createproject(this.form.value).subscribe((res) => {
+
+      this.router.navigate(['/accueil'])
+      
+    })
+  }
+
+  getCat(){
+    this.categorieService.getCategories().subscribe((data)=> {
+      //console.log(data);
+      
+      this.allCategories = data;
+    })
   }
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -46,17 +99,11 @@ export class CampagneComponent implements OnInit  {
   next(){
     this.selectedFiles[this.step] = this.selectedFile;
     
-    if(this.step==1){
-      if (this.personalDetails.invalid) {
-        return;
-      }
-      this.formValues[0] = this.personalDetails.value;
-    }
-    if(this.step==2){
-      if (this.projetsDetails.invalid) {
-        return;
-      }
-      this.formValues[1] = this.projetsDetails.value;
+    const formGroup = this.form.get(`step${this.step}`) as FormGroup;
+    if (formGroup.valid) {
+
+    } else {
+      formGroup.markAllAsTouched();
     }
 
     // Sauvegarder les fichiers déjà sélectionnés avant de passer à l'étape suivante
@@ -66,17 +113,11 @@ export class CampagneComponent implements OnInit  {
 
     this.step++;
     this.selectedFile = this.selectedFiles[this.step - 1];
-    console.log(this.formValues[1]);
 }
 
   
   submit(){
-    if(this.step==3){
-      if (this.campaignDetails.invalid) {
-        return;
-      }
-      this.formValues[2] = this.campaignDetails.value;
-    }
+    this.router.navigate(['/accueil'])
   }
   previous(){
     this.selectedFiles[this.step] = this.selectedFile;

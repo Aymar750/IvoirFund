@@ -41,6 +41,12 @@
     background-color: var(--main-color);
     color: var(--white);
 }
+
+.active{
+    background-color: var(--main-color);
+    color: var(--white) !important;
+}
+
 .btn{
     display: inline-block;
     margin-top: 1rem;

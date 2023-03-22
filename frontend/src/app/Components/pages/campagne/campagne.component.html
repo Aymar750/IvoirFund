@@ -1,6 +1,6 @@
 <div class="row"> 
     <div class="col-md-12 col-md-offset-3">
-        <form [formGroup]="personalDetails" id="msform" autocomplete="off">
+        <form [formGroup]="form" id="msform" autocomplete="off" (submit)="projet()">
             <!-- progressbar -->
             <ul id="progressbar">
                 <li [ngClass]="step>=1 ? 'active ' : 'inactive'">Vos informations</li>
@@ -9,40 +9,55 @@
             </ul>
             <!-- fieldsets -->
 
-            <fieldset  *ngIf="step == 1" >
+            <div class="fieldset"  *ngIf="step == 1"formGroupName="step1">
                 <h2 class="fs-title">Details Personels ou de l'entreprise</h2>
                 <input type="text" formControlName="name"  placeholder="Nom"autocomplete="off" [value]="getPreviousValues(0).name || ''"/>
               
                 <input type="text" formControlName="email" name="email" placeholder="Email"[value]="getPreviousValues(0).email || ''"/>
              
-                <input type="text" formControlName="phone" name="phone" placeholder="Phone" [value]="getPreviousValues(0).phone || ''"/>
+                <input type="text" formControlName="phone" name="phone" placeholder="Numero de telephone" [value]="getPreviousValues(0).phone || ''"/>
+
+                <input type="text" formControlName="web" name="web" placeholder="Entrez votre site web" [value]="getPreviousValues(0).web || ''"/>
+
+                <input type="text" formControlName="social" name="social" placeholder="Entrez votre reseau social facebook" [value]="getPreviousValues(0).social || ''"/>
               
                 <input (click)="next()" type="button" name="next" class="next action-button" value="Suivant"/>
-            </fieldset>
-        </form>
-         <form [formGroup]="projetsDetails" id="msform" autocomplete="off">
-            <fieldset *ngIf="step == 2" >
+            </div>
+
+         
+            <div class = "fieldset" *ngIf="step == 2" formGroupName="step2">
                 <h2 class="fs-title">Details du projet</h2>
                 <input type="text" formControlName="name"  placeholder="Nom du projet" [value]="getPreviousValues(1).name || ''"/>
               
                 <textarea rows="5" cols="5" formControlName="description"  placeholder="description du projet" [value]="getPreviousValues(1).description || ''"></textarea>
                
-                <input type="file" formControlName="file"  (change)="onFileSelected($event)" [value]="selectedFiles[0]"/>
-               
+                <!-- <input type="file" formControlName="file"  (change)="onFileSelected($event)" [value]="selectedFiles[0]"/> -->
+                
+                <input type="number" formControlName="montant"  placeholder="Entrez le montant du budget dont vous avez besoin" [value]="getPreviousValues(1).montant || ''"/>
+
+                <input type="text" formControlName="contre"  placeholder="Qu'est ce que vous offrez en contrepartie ?" [value]="getPreviousValues(1).contre || ''"/>
+
+                <!-- <input type="text" formControlName="cat"  placeholder="Entrez la categorie" [value]="getPreviousValues(1).cat || ''"/> -->
+
+                <select formControlName="cat">
+                    <option [ngValue]="null" disabled>Selectionnez la categorie de votre projet</option>
+                    <option *ngFor="let item of allCategories" [ngValue]="item.id" style="color:black">{{item.name}}</option>
+                </select>
+
                 <input (click)="previous()" type="button" name="previous" class="previous action-button-previous" value="Precedent"/>
                 <input  (click)="next()" type="button" name="next" class="next action-button" value="Suivant"/>
-            </fieldset>
-        </form>
-         <form [formGroup]="campaignDetails" id="msform"autocomplete="off">
-            <fieldset *ngIf="step == 3" [formGroup]="projetsDetails" >
+            </div>
+        
+         
+            <div class="fieldset" *ngIf="step == 3" formGroupName="step3" >
                 <h2 class="fs-title">Details sur la campagne</h2>
-                <input type="text" formControlName="datefin" placeholder="..." [value]="getPreviousValues(2).datefin || ''"/>
+                <input type="date" formControlName="datefin" placeholder="Selectionnez la date pour la fin de campagne" [value]="getPreviousValues(2).datefin || ''"/>
               
-                <input type="text" formControlName="budget"  placeholder="..."[value]="getPreviousValues(2).budget || ''" />
+                <!-- <input type="number" formControlName="budget"  placeholder="..."[value]="getPreviousValues(2).budget || ''" /> -->
                
                 <input (click)="previous()" type="button" name="previous" class="previous action-button-previous" value="Precedent"/>
-                <input (click)="submit()"type="submit" name="submit" class="submit action-button" value="Soumettre"/>
-            </fieldset>
+                <input type="submit" name="submit" class="submit action-button" value="Soumettre"/>
+            </div>
         </form>
 
     </div>

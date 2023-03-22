@@ -1,21 +1,45 @@
 <header class="header">
+  <section class="flex">
+    <div class="fas fa-bars-staggered" id="menu-btn"></div>
+    <a href="#" class="logo"><i class="fa-solid fa-briefcase"></i>IvoirFund</a>
 
-    <section class="flex">
+    <nav class="navbar">
+      <a
+        routerLink="accueil"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActiveClass="active"
+        >Accueil</a
+      >
+      <a
+        routerLink="projets"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActiveClass="active"
+        >Tous les projets</a
+      >
+      <a
+        href="#"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActiveClass="active"
+        >Contact</a
+      >
+      <span *ngIf="!isLoggedIn">
+        <a
+          Mon
+          routerLink="/compte/tableauBord"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActiveClass="active"
+          >Mon Compte</a
+        >
+      </span>
+    </nav>
 
-        <div class="fas fa-bars-staggered" id="menu-btn"></div>
-        <a href="#" class="logo"><i class="fa-solid fa-briefcase"></i>IvoirFund</a>
-
-        <nav class="navbar">
-            <a routerLink="accueil"> Accueil</a>
-            <a routerLink="projets">Tous les projets</a>
-            <a href="#">Contact</a>
-            <span *ngIf="!isLoggedIn">
-                <a Mon routerLink="/compte">Mon Compte</a>
-            </span>
-        </nav>
-
-        <a href="/campaign" class="btn"style="margin-top:0;">Lancer une campagne</a>
-    </section>
-    
+    <a href="/campaign" class="btn" style="margin-top: 0"
+      >Lancer une campagne</a
+    >
+  </section>
 </header>
 <router-outlet></router-outlet>

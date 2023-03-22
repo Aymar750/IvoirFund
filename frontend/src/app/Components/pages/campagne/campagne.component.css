@@ -5,7 +5,7 @@
     margin-top: 30px;
 }
 
-#msform fieldset {
+#msform .fieldset {
     background: white;
     border: 0 none;
     border-radius: 0px;
@@ -20,12 +20,12 @@
 }
 
 /*Hide all except first fieldset*/
-#msform fieldset:not(:first-of-type) {
+#msform .fieldset:not(:first-of-type) {
     display: none;
 }
 
 /*inputs*/
-#msform input, #msform textarea {
+#msform input, #msform textarea ,#msform select {
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 0px;
@@ -167,7 +167,7 @@
 
 }
 
-fieldset {
+.fieldset {
    /* for chrome and safari*/
   -webkit-animation-duration: .25ms;-webkit-animation-name: slidein;
 

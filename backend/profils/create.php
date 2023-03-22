@@ -1,4 +1,5 @@
 <?php
+
 include_once("../configdb.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -6,67 +7,77 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-// Vérifier si la méthode HTTP est POST
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Récupérer les données du formulaire
-    $user_id = $_POST['user_id'];
-    $name = $_POST['name'];
-    $bio = $_POST['bio'];
+$postdata = file_get_contents("php://input");
+$request = json_decode($postdata);
 
-    // Vérifier si le champ profile_picture est défini
-    if (isset($_FILES['profile_picture'])) {
-        $file_name = $_FILES['profile_picture']['name'];
-        $file_tmp = $_FILES['profile_picture']['tmp_name'];
-        $file_size = $_FILES['profile_picture']['size'];
-        $file_type = $_FILES['profile_picture']['type'];
+// Récupération des données du formulaire de création de profil
 
-        // Vérifier si le fichier est une image
-        $valid_extensions = array('jpeg', 'jpg', 'png');
-        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-        if (in_array($file_extension, $valid_extensions)) {
-            // Enregistrer le fichier dans le dossier uploads
-            $upload_dir = '../uploads/';
-            $file_path = $upload_dir . $file_name;
-            move_uploaded_file($file_tmp, $file_path);
+$user_id = $request->user_id;
+$name = $request->name;
+$bio = $request->bio;
+$reseau_social = $request->reseau_social;
+$site_web = $request->site_web;
 
-            // Insérer les données dans la base de données
-            $sql = "INSERT INTO Profiles (user_id, name, bio, profile_picture) VALUES (:user_id, :name, :bio, :profile_picture)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                'user_id' => $user_id,
-                'name' => $name,
-                'bio' => $bio,
-                'profile_picture' => $file_path
-            ]);
+// Vérification si le fichier a été téléchargé avec succès
+if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == UPLOAD_ERR_OK) {
+    $filename = $_FILES['profile_picture']['name'];
+    $filetmp = $_FILES['profile_picture']['tmp_name'];
+    $filetype = $_FILES['profile_picture']['type'];
+    $filepath = "../uploads/" . $filename;
 
-            // Renvoyer la réponse en JSON
-            $response = [
-                'status' => 'success',
-                'message' => 'Profile created successfully'
-            ];
+    // Déplacement du fichier téléchargé vers le dossier d'upload
+    if (move_uploaded_file($filetmp, $filepath)) {
+        // Préparation de la requête SQL pour insérer les données dans la table Profiles
+        $stmt = $pdo->prepare("INSERT INTO Profiles (user_id, name, bio, profile_picture, reseau_social, site_web) VALUES (:user_id, :name, :bio, :profile_picture, :reseau_social, :site_web)");
+
+        // Lier les paramètres de la requête
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':bio', $bio);
+        $stmt->bindParam(':profile_picture', $filepath);
+        $stmt->bindParam(':reseau_social', $reseau_social);
+        $stmt->bindParam(':site_web', $site_web);
+
+    // Exécuter la requête SQL
+        if ($stmt->execute()) {
+            // Récupération de l'ID du profil créé
+            $profile_id = $pdo->lastInsertId();
+
+            // Préparation de la réponse JSON à envoyer
+            $response = array(
+                "status" => "success",
+                "message" => "Profile created successfully",
+                "data" => array(
+                    "id" => $profile_id,
+                    "user_id" => $user_id,
+                    "name" => $name,
+                    "bio" => $bio,
+                    "profile_picture" => $filepath,
+                    "reseau_social" => $reseau_social,
+                    "site_web" => $site_web
+                )
+            );
+
+            // Envoyer la réponse JSON
+            header('Content-Type: application/json');
             echo json_encode($response);
         } else {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Invalid file type']);
-        }
-    } else {
-        // Si le champ profile_picture n'est pas défini, insérer les données sans l'image
-        $sql = "INSERT INTO Profiles (user_id, name, bio) VALUES (:user_id, :name, :bio)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'user_id' => $user_id,
-            'name' => $name,
-            'bio' => $bio
-        ]);
+            // Préparation de la réponse JSON à envoyer en cas d'erreur
+            $response = array(
+                "status" => "error",
+                "message" => "Error creating profile"
+            );
 
-        // Renvoyer la réponse en JSON
-        $response = [
-            'status' => 'success',
-            'message' => 'Profile created successfully'
-        ];
-        echo json_encode($response);
-    }
+            // Envoyer la réponse JSON avec le code d'erreur 500
+            header('Content-Type: application/json');
+            http_response_code(500);
+            echo json_encode($response);
+        }
 } else {
-    http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-}
+    // Préparation de la réponse JSON à envoyer en cas d'erreur
+    $response = array(
+        "status" => "error",
+        "message" => "Error uploading profile picture"
+    );}
+} 
+?>

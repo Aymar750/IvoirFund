@@ -1,7 +1,7 @@
 <?php
 include_once("../configdb.php");
 
-// Requête SELECT pour récupérer toutes les catégories de projets
+// Requête SELECT pour récupérer toutes les informations concernant les projets
 $query = "SELECT p.id AS project_id, p.title, p.description, p.creation_date, p.end_date, p.funding_goal,
                 c.id AS category_id, c.name AS category_name,
                 u.id AS user_id, u.name AS user_name, u.email, 
@@ -20,8 +20,6 @@ $query = "SELECT p.id AS project_id, p.title, p.description, p.creation_date, p.
                 LEFT JOIN rewards r ON p.id = r.project_id
                 LEFT JOIN comments cm ON p.id = cm.project_id
                 LEFT JOIN images i ON p.id = i.project_id;
-
-
                 ";
 
 // Exécute la requête
